@@ -1,7 +1,7 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from django.db.models.query_utils import Q
 from .settings import BASE_DIR
-from woven.models import VirtualNuban, GetVirtualNuban
+from woven.models import CreateVirtualNuban, GetVirtualNuban
 from woven.wovenapi import create_nuban, get_nuban
 import json
 
@@ -36,7 +36,7 @@ scheduler.remove_all_jobs()
 def create_nuban_and_get_nuban():
     status_code, response = create_nuban()
     if status_code == 200:
-        VirtualNuban.objects.create(
+        CreateVirtualNuban.objects.create(
             bank_name=response['data']['bank_name'],
             vnuban=response['data']['vnuban'],
             body=json.dumps(response)

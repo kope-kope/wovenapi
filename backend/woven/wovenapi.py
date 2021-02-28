@@ -15,7 +15,7 @@ def get_random_string(length):
     return result_str
 
 base_url = 'https://api.woven.finance'
-api_key = 'vb_ls_bfac75fe54a952841971b6918d06aeb2659523dc92d6'
+api_key = os.environ.get('WOVENAPISECRET')
 
 def create_nuban():
   
