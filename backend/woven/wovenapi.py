@@ -7,6 +7,7 @@ import json
 import datetime
 from faker import Faker
 import os
+import time
 
 def get_random_string(length):
     # choose from all lowercase letter
@@ -43,12 +44,13 @@ def create_nuban():
     'requestId': str(requestId),
     'Content-Type': 'application/json'
   }
-
+  start_time = time.time()
   response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
-
-  return response.status_code, response.json()
+  stop_time = time.time()
+  return response.status_code, response.json(), start_time, stop_time
 
 def get_nuban(nuban):
+  
   requestId2 = get_random_string(8)
   url = "{}/v2/api/vnubans/{}".format(base_url, nuban)
 
@@ -59,6 +61,8 @@ def get_nuban(nuban):
     'Cookie': '__cfduid=d2536ee6400a13b04b27b48cd6e65a3711613903352'
   }
 
+  start_time = time.time()
   response = requests.request("GET", url, headers=headers, data=payload)
+  stop_time = time.time()
 
-  return response.status_code, response.json()
+  return response.status_code, response.json(), start_time, stop_time
