@@ -7,7 +7,11 @@ import json
 import datetime
 from faker import Faker
 import os
-import time
+import datetime
+
+def get_time():
+  current = datetime.datetime.now()
+  return current.strftime("%H:%M:%S:%f")
 
 def get_random_string(length):
     # choose from all lowercase letter
@@ -21,7 +25,7 @@ api_key = 'vb_ls_bfac75fe54a952841971b6918d06aeb2659523dc92d6'
 def create_nuban():
   
   cust = get_random_string(10)
-  requestId = time.time()
+  requestId = get_time()
   faker = Faker()
 
   url = "{}/v2/api/vnubans/create_customer".format(base_url)
@@ -44,9 +48,9 @@ def create_nuban():
     'requestId': str(requestId),
     'Content-Type': 'application/json'
   }
-  start_time = time.time()
+  start_time = get_time()
   response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
-  stop_time = time.time()
+  stop_time = get_time()
   return response.status_code, response.json(), start_time, stop_time
 
 def get_nuban(nuban):
@@ -61,8 +65,8 @@ def get_nuban(nuban):
     'Cookie': '__cfduid=d2536ee6400a13b04b27b48cd6e65a3711613903352'
   }
 
-  start_time = time.time()
+  start_time = get_time()
   response = requests.request("GET", url, headers=headers, data=payload)
-  stop_time = time.time()
+  stop_time = get_time()
 
   return response.status_code, response.json(), start_time, stop_time

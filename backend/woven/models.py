@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 
-class VirtualNuban(models.Model):
+class CreateVirtualNuban(models.Model):
     body = models.JSONField()
     bank_name = models.CharField(max_length=400)
     vnuban = models.CharField(max_length=10)
