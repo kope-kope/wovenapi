@@ -2,7 +2,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from django.db.models.query_utils import Q
 from .settings import BASE_DIR
 from woven.models import CreateVirtualNuban, GetVirtualNuban, APIRequest
-from woven.wovenapi import create_nuban, get_nuban
+from woven.wovenapi import create_nuban, get_nuban, initiate_payout, list_settlements, list_transactions, list_vnuban
 import json
 
 import logging
@@ -33,6 +33,11 @@ scheduler = BackgroundScheduler({
 scheduler.start()
 scheduler.remove_all_jobs()
 
+def get_status(status_code):
+    if status_code in [200, 201]:
+        return 'successful'
+    return 'failed'
+
 def create_nuban_and_get_nuban():
     status_code, response, start_time, end_time = create_nuban()
     if status_code == 200:
@@ -60,7 +65,53 @@ def create_nuban_and_get_nuban():
                 status='successful',
                 status_message=json.dumps(res)
             )
-    print(response)
-        
+        else:
+            APIRequest.objects.create(
+                call_type='get_vnuban',
+                start_time=stime,
+                end_time=etime,
+                status='failed',
+                status_message=json.dumps(res)
+            )
+    else:
+        APIRequest.objects.create(
+            call_type='get_vnuban',
+            start_time=start_time,
+            end_time=end_time,
+            status='failed',
+            status_message=json.dumps(response)
+        )
+    status_code, response, start_time, end_time = initiate_payout()
+    APIRequest.objects.create(
+        call_type='initiate_payout',
+        start_time=start_time,
+        end_time=end_time,
+        status=get_status(status_code),
+        status_message=json.dumps(response)
+    )
+    status_code, response, start_time, end_time = list_settlements()
+    APIRequest.objects.create(
+        call_type='list_settlements',
+        start_time=start_time,
+        end_time=end_time,
+        status=get_status(status_code),
+        status_message=json.dumps(response)
+    )
+    status_code, response, start_time, end_time = list_transactions()
+    APIRequest.objects.create(
+        call_type='list_transactions',
+        start_time=start_time,
+        end_time=end_time,
+        status=get_status(status_code),
+        status_message=json.dumps(response)
+    )
+    status_code, response, start_time, end_time = list_vnuban()
+    APIRequest.objects.create(
+        call_type='list_vnuban',
+        start_time=start_time,
+        end_time=end_time,
+        status=get_status(status_code),
+        status_message=json.dumps(response)
+    )
 
 scheduler.add_job(create_nuban_and_get_nuban, trigger='interval', minutes=1)
