@@ -26,7 +26,7 @@ class APIRequest(models.Model):
     end_time = models.CharField(max_length=400)
     status = models.CharField(max_length=100, choices=(('successful', 'successful'), ('failed', 'failed')))
     status_message = models.JSONField()
-    created_on = models.DateField(auto_now_add=True)
+    created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return self.call_type + ' ' + str(self.created_on)
