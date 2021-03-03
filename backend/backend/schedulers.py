@@ -114,4 +114,4 @@ def create_nuban_and_get_nuban():
         status_message=json.dumps(response)
     )
 
-scheduler.add_job(create_nuban_and_get_nuban, trigger='interval', minutes=1)
+scheduler.add_job(create_nuban_and_get_nuban, trigger='interval', minutes=60)
