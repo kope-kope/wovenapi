@@ -16,7 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from .schedulers import scheduler
+from woven.views import GetOTP
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('otp/', GetOTP.as_view())
 ]

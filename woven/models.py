@@ -30,3 +30,10 @@ class APIRequest(models.Model):
 
     def __str__(self) -> str:
         return self.call_type + ' ' + str(self.created_on)
+
+
+class MandateId(models.Model):
+    mandate_id = models.CharField(max_length=400)
+
+    def __str__(self):
+        return self.mandate_id

@@ -1,4 +1,3 @@
-import faker
 import requests
 import time
 import random
@@ -164,6 +163,63 @@ def list_vnuban():
   }
   start_time = get_time()
   response = requests.request("GET", url, headers=headers, data=payload)
+  stop_time = get_time()
+
+  print(response.json())
+
+  return response.status_code, response.json(), start_time, stop_time
+
+def create_mandate():
+  requestId2 = get_random_string(8)
+  url = "{}/v1/api/directdebits/mandates".format(base_url)
+  faker = Faker()
+
+  payload = {
+    "customer_name": faker.name().split()[0] + " " + get_random_number(),
+    "customer_email": faker.email(),
+    "customer_mobile": "08012345678",
+    "customer_reference": get_random_string(10),
+    "account_number": str(os.getenv("DD_BENEFICIARY_NUBAN")),
+    "amount": get_amount(),
+    "currency": "NGN",
+    "call_back_url": "",
+    "mandate_type": "direct",
+    "narration": "automated direct debit",
+    "bank_code": "044"
+  }
+
+  # payload=" {\r\n    \"customer_name\": \"$Jared Bednar V\",\r\n    \"customer_email\": \"$Hillary36@hotmail.com\",\r\n    \"customer_mobile\": \"08012345678\",\r\n    \"customer_reference\": \"$1750f9ed-95e9-40d8-ae02-3444bf732edd\",\r\n    \"account_number\": \"1227140382\",\r\n    \"bank_code\": \"044\",\r\n    \"amount\": 100,\r\n    \"currency\": \"NGN\",\r\n    \"call_back_url\": \"\",\r\n    \"mandate_type\": \"direct\",\r\n    \"narration\": \"automated direct debit\"\r\n  }"
+
+  headers = {
+    'requestId': str(requestId2),
+    'api_secret': api_key,
+    'Content-Type': 'application/json'
+  }
+  start_time = get_time()
+  response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+  stop_time = get_time()
+
+  print(response.json())
+
+  return response.status_code, response.json(), start_time, stop_time
+
+def verify_mandate(otp, mandate_ref):
+  print(otp)
+  requestId2 = get_random_string(8)
+  url = "{}/v1/api/directdebits/mandates/{}".format(base_url, mandate_ref)
+  faker = Faker()
+
+  payload = {
+    "otp": otp
+  }
+
+  headers = {
+    'requestId': str(requestId2),
+    'api_secret': api_key,
+    'Content-Type': 'application/json'
+  }
+  start_time = get_time()
+  response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
   stop_time = get_time()
 
   print(response.json())
