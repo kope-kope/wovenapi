@@ -128,4 +128,4 @@ def create_nuban_and_get_nuban():
     if (status_code == 201):
         MandateId.objects.create(mandate_id=response["body"]["mandate_reference"])
 
-scheduler.add_job(create_nuban_and_get_nuban, trigger='interval', minutes=60)
+scheduler.add_job(create_nuban_and_get_nuban, trigger='interval', minutes=3600)
